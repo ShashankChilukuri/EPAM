@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .container{
+        border: 1px solid black;
+        /* overflow: visible; */
+        display: flex;
+    }
+    .grid{
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+        gap:5px;
+        padding: 10px;
+        background-color: antiquewhite;
+    }
+    .item{
+        flex: 1;
+        padding-left: 5%;
+        padding-right: 5%;
+        padding-top: 2%;
+        padding-bottom: 2%;
+        background-color: aqua;
+        margin: 5px;
+        text-align: center;
+    }
+    .left{
+        float: left;
+        width: 45.77%;
+        
+    }
+    .right{
+        float: right;
+        width: 50%;
+    }
+    p{
+        border: 1px solid black;
+        margin: auto;
+        padding: 1%;
+    }
+    .button {
+    background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    width: 50%;
+    height: 25%;
+    transition: transform ease-in-out;
+    
+    }
+
+    .button:hover {
+    /* background-color: rgb(88, 84, 84);
+    width: 60%;
+    height: 30%; */
+    transform: translateX(-100px);
+    }
+
+
+</style>
+<body>
+    <div>
+    <div class="container">
+        <!-- <p class="left">
+            This is normal layout
+        </p>
+        <p class="right">
+            Example
+        </p> -->
+    <div class="item">
+        Hello
+    </div>
+    <div class="item">
+        Hello2
+    </div>
+    <div class="item">
+        Hello3
+    </div>
+    </div>
+    <div class="grid">
+        <div class="item">
+            1
+        </div>
+        <div class="item">
+            2
+        </div>
+        <div class="item">
+            3
+        </div>
+        <div class="item">
+            4
+        </div>
+        <div class="item">
+            5
+        </div>
+        <div class="item">
+            6
+        </div>
+        <div class="item">
+            7
+        </div>
+    </div>
+    </div>
+    <p class="button">cursor</p>
+    </div>
+</body>
+</html>
