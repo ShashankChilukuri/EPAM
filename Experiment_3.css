@@ -1,0 +1,23 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+}
+
+/* Hide navigation and footer in print mode */
+@media print {
+    nav, footer {
+        display: none;
+    }
+    
+    body {
+        font-size: 14pt;
+        color: black;
+        background: none;
+    }
+
+    h1, h2 {
+        page-break-before: always;
+    }
+}

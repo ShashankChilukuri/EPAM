@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Profit Calculator</title>
+</head>
+<body>
+
+    <h1>Deposit Profit Calculator</h1>
+    <label for="depositAmount">Enter Initial Deposit Amount: </label>
+    <input type="text" id="depositAmount" placeholder="Enter amount">
+    <button onclick="calculateProfit()">Calculate Profit</button>
+
+    <h2>Profit: <span id="profitResult">0</span></h2>
+
+    <script>
+        function calculateProfit() {
+            const initialAmount = parseFloat(document.getElementById('depositAmount').value);
+            const interestRate = 0.05;
+            
+            if (isNaN(initialAmount) || initialAmount <= 0) {
+                alert("Please enter a valid positive number for the deposit amount.");
+                return;
+            }
+            
+            const profit = initialAmount * interestRate;
+            document.getElementById('profitResult').textContent = profit.toFixed(2);
+        }
+    </script>
+
+</body>
+</html>

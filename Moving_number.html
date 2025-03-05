@@ -1,141 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moving Numbers</title>
-    <style>
-        .container {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            border: 2px solid black;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Graph Visualizer</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
 
-        .moving-number {
-            position: absolute;
-            font-size: 24px;
-            font-weight: bold;
-            color: black;
-            background-color: rgb(240, 236, 236);
-            width: 50px;
-            height: 50px;
-            line-height: 50px;
-            text-align: center;
-            border-radius: 50%;
-            transition: transform 1s ease-in-out;
-        }
+    #graph-container {
+      width: 100%;
+      height: 90vh;
+      position: relative;
+      border: 1px solid black;
+      margin-top: 20px;
+    }
 
-        .pointer {
-            position: absolute;
-            border-top: 2px dashed red; /* Dashed line to point from one number to another */
-            transform-origin: 0 0;
-        }
+    .node {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: blue;
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 12px;
+    }
 
-    </style>
+    .edge {
+      position: absolute;
+      width: 2px;
+      background-color: black;
+      transform-origin: 0 0;
+    }
+
+    #input-form {
+      margin: 20px;
+    }
+
+    input {
+      padding: 5px;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
 
-<div>
-    <input type="number" id="numberInput" placeholder="Enter a number">
-    <button onclick="addNumber()">Add Number</button>
-    <input type="number" id="deleteInput" placeholder="Number to delete">
-    <button onclick="deleteNumber()">Delete Number</button>
-    <button onclick="deleteAll()">Delete All</button>
-    <br>
-    <input type="number" id="startNumber" placeholder="Start number">
-    <input type="number" id="endNumber" placeholder="End number">
-    <button onclick="pointBetweenNumbers()">Point Between Numbers</button>
-    <div class="container" id="container"></div>
-</div>
+  <div id="input-form">
+    <input type="number" id="node1" placeholder="Node 1" />
+    <input type="number" id="node2" placeholder="Node 2" />
+    <button id="addEdge">Add Edge</button>
+  </div>
 
-<script>
-    let numbersArray = [];
-    let positions = {}; // Store positions of the numbers
+  <div id="graph-container"></div>
 
-    function addNumber() {
-        const input = document.getElementById("numberInput");
-        const container = document.getElementById("container");
+  <script>
+    const edgeList = [];
+    const nodes = {};
 
-        if (input.value === "") return;
-
-        const numberValue = input.value;
-        numbersArray.push(numberValue);
-
-        const numberElement = document.createElement("span");
-        numberElement.classList.add("moving-number");
-        numberElement.textContent = numberValue;
-        numberElement.dataset.value = numberValue; // Store value in dataset for easy lookup
-        container.appendChild(numberElement);
-
-        // Store the position of the new number element
-        positions[numberValue] = {
-            x: Math.random() * (container.clientWidth - 50), // Random X position
-            y: Math.random() * (container.clientHeight - 50), // Random Y position
-        };
-
-        // Update the number's position
-        numberElement.style.transform = `translate(${positions[numberValue].x}px, ${positions[numberValue].y}px)`;
-
-        input.value = ""; // Clear input
+    // Function to create a node
+    function createNode(id, x, y) {
+      const node = document.createElement('div');
+      node.classList.add('node');
+      node.style.left = `${x}px`;
+      node.style.top = `${y}px`;
+      node.innerText = id;
+      document.getElementById('graph-container').appendChild(node);
     }
 
-    function pointBetweenNumbers() {
-        const startNumber = document.getElementById("startNumber").value;
-        const endNumber = document.getElementById("endNumber").value;
-
-        if (!startNumber || !endNumber) return;
-
-        // Get the positions of the start and end numbers
-        const startPos = positions[startNumber];
-        const endPos = positions[endNumber];
-
-        if (!startPos || !endPos) return; // If numbers not found, return
-
-        // Calculate the distance between the two points
-        const deltaX = endPos.x - startPos.x;
-        const deltaY = endPos.y - startPos.y;
-        const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-        // Create a pointer (a dashed line)
-        const pointer = document.createElement("div");
-        pointer.classList.add("pointer");
-
-        // Set the pointer's size and rotation
-        pointer.style.width = `${length}px`; // Set length based on the distance
-        pointer.style.transform = `rotate(${Math.atan2(deltaY, deltaX) * 180 / Math.PI}deg)`; // Correct rotation
-        pointer.style.top = `${startPos.y + 25}px`; // Start at the center of the number
-        pointer.style.left = `${startPos.x + 25}px`; // Start at the center of the number
-
-        // Append the pointer to the container
-        document.getElementById("container").appendChild(pointer);
+    // Function to draw an edge between two nodes
+    function drawEdge(startId, endId) {
+      const start = nodes[startId];
+      const end = nodes[endId];
+      
+      const edge = document.createElement('div');
+      edge.classList.add('edge');
+      
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      
+      const length = Math.sqrt(dx * dx + dy * dy);
+      const angle = Math.atan2(dy, dx);
+      
+      edge.style.width = `${length}px`;
+      edge.style.transform = `rotate(${angle}rad)`;
+      edge.style.left = `${start.x}px`;
+      edge.style.top = `${start.y}px`;
+      
+      document.getElementById('graph-container').appendChild(edge);
     }
 
-    function deleteNumber() {
-        const deleteInput = document.getElementById("deleteInput").value;
-        if (deleteInput === "") return;
+    // Function to handle adding an edge
+    function addEdge() {
+      const node1 = document.getElementById('node1').value;
+      const node2 = document.getElementById('node2').value;
 
-        const container = document.getElementById("container");
-        const numbers = document.querySelectorAll(".moving-number");
+      if (node1 === "" || node2 === "" || node1 === node2) {
+        alert("Please enter valid nodes.");
+        return;
+      }
 
-        numbers.forEach(number => {
-            if (number.dataset.value === deleteInput) {
-                container.removeChild(number);
-                numbersArray = numbersArray.filter(num => num !== deleteInput); // Remove from array
-                delete positions[deleteInput]; // Remove from positions
-            }
-        });
+      // Add edge to edgeList
+      edgeList.push([parseInt(node1), parseInt(node2)]);
 
-        document.getElementById("deleteInput").value = ""; // Clear input
+      // If nodes do not exist, create them with random positions
+      if (!nodes[node1]) {
+        nodes[node1] = { x: Math.random() * 400, y: Math.random() * 400 };
+        createNode(node1, nodes[node1].x, nodes[node1].y);
+      }
+      if (!nodes[node2]) {
+        nodes[node2] = { x: Math.random() * 400, y: Math.random() * 400 };
+        createNode(node2, nodes[node2].x, nodes[node2].y);
+      }
+
+      // Draw the new edge
+      drawEdge(parseInt(node1), parseInt(node2));
     }
 
-    function deleteAll() {
-        document.getElementById("container").innerHTML = "";
-        numbersArray = [];
-        positions = {}; // Clear positions
-    }
-</script>
+    // Event listener for the "Add Edge" button
+    document.getElementById('addEdge').addEventListener('click', addEdge);
+  </script>
 
 </body>
 </html>
