@@ -6,4 +6,5 @@ function filterArray() {
 }
 
 const result = filterArray();
+console.log("Array: ",numbers);
 console.log("Filtered Array:", result);
